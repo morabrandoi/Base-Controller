@@ -30,3 +30,9 @@ class Sticks:
 
     RIGHT_STICK = "R_STICK"
     LEFT_STICK = "L_STICK"
+
+
+# make sure this is in sync with server.py
+class Actions:  # enum
+    PRESS_BUTTONS = "press_buttons"
+    TILT_STICK = "tilt_stick"

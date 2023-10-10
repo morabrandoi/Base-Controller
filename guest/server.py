@@ -1,31 +1,39 @@
-# THIS IS THE GUEST MACHINE CODE
-
 import socket
 import nxbt
 import json
 
-HOST = "0.0.0.0"  # VirtualBox's default gateway IP for the host machine when using NAT networking
-PORT = 6543  # Same port as used by the server
+
+class Actions:  # enum
+    PRESS_BUTTONS = "press_buttons"
+    TILT_STICK = "tilt_stick"
+
 
 nx = nxbt.Nxbt()
 switch_addresses = nx.get_switch_addresses()
-
-# prompt for controller
-if (
-    len(switch_addresses) == 0
-    or input("Are you connecting to a new Switch? (y/N): ").lower() == "y"
-):
-    print("Please be on 'Change Grip/Order' screen on Switch")
-    controller_index = nx.create_controller(nxbt.PRO_CONTROLLER)
-else:
-    controller_index = nx.create_controller(
-        nxbt.PRO_CONTROLLER, reconnect_address=switch_addresses
-    )
+already_connected = False
 
 
-print("Waiting to connect to Switch...")
-nx.wait_for_connection(controller_index)
-print("Connected To Switch. Starting server...")
+def initialize_nx(is_connected):
+    if is_connected:
+        return
+
+    try:
+        controller_index = nx.create_controller(
+            nxbt.PRO_CONTROLLER,
+            reconnect_address=switch_addresses,
+        )
+
+        if controller_index is None:
+            raise Exception("No controller available from the list of addresses")
+    except Exception:
+        controller_index = nx.create_controller(nxbt.PRO_CONTROLLER)
+
+    nx.wait_for_connection(controller_index)
+    return controller_index
+
+
+HOST = "0.0.0.0"  # VirtualBox's default gateway IP for the host machine when using NAT networking
+PORT = 6543  # Same port as used by the server
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
@@ -34,8 +42,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
     while True:
         conn, addr = s.accept()
+
+        if not already_connected:
+            controller_index = initialize_nx(already_connected)
+            already_connected = True
+
         with conn:
             print("Connected by", addr)
+
             while True:
                 data = conn.recv(1024)
                 if not data:
@@ -46,8 +60,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     action = parsed_data.get("action")
                     args = parsed_data.get("args")
 
-                    if action == "tilt_stick":
-                        print("tilting stick now")
+                    if action == Actions.TILT_STICK:
                         nx.tilt_stick(
                             controller_index,
                             args.get("stick"),
@@ -57,8 +70,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                             released=args.get("released"),
                             block=args.get("block"),
                         )
-                    elif action == "press_buttons":
-                        print("pressing buttons now")
+                    elif action == Actions.PRESS_BUTTONS:
                         nx.press_buttons(
                             controller_index,
                             args.get("buttons"),
