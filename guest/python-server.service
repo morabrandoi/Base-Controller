@@ -1,0 +1,13 @@
+[Unit]
+Description=My Python Server
+
+[Service]
+ExecStart=/home/vagrant/guest/start_server.sh
+Restart=always
+User=vagrant
+Group=vagrant
+Environment=PATH=/usr/bin:/usr/local/bin
+WorkingDirectory=/home/vagrant/guest
+
+[Install]
+WantedBy=multi-user.target
