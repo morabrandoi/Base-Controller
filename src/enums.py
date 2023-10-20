@@ -1,6 +1,9 @@
-class Buttons:
-    """The button object containing the button string constants."""
+from enum import Enum, unique
 
+
+# The button object containing the button string constants.
+@unique
+class Button(Enum):
     Y = "Y"
     X = "X"
     B = "B"
@@ -25,14 +28,15 @@ class Buttons:
     ZL = "ZL"
 
 
-class Sticks:
-    """The sticks object containing the joystick string constants."""
-
+# The sticks object containing the joystick string constants
+@unique
+class Stick(Enum):
     RIGHT_STICK = "R_STICK"
     LEFT_STICK = "L_STICK"
 
 
-# make sure this is in sync with server.py
-class Actions:  # enum
+# NOTE: must manually keep this in sync with server.py
+@unique
+class Action(Enum):  # enum
     PRESS_BUTTONS = "press_buttons"
     TILT_STICK = "tilt_stick"
