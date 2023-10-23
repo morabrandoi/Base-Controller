@@ -2,12 +2,13 @@
 
 ## Steps So Far
 
-- make sure vagrant is running or run `vagrant up`
-- Go into nxbt folder and run `vagrant ssh`
-- use `sudo nxbt tui -r` to reconnect to previously connected switch
-- When moving scripts to guest run don't forget to run `chmod +x start_server.sh
-`
-- Added as service started by systemd.
+- In terminal, CD into the "nxbt" directory cloned from github.
+- There, make sure vagrant is running or run `vagrant up`
+- Run `vagrant ssh` to connect to the vm.
+- use `sudo nxbt tui` to connect to new switch
+  - use `sudo nxbt tui -r` to reconnect to previously connected switch
+- When moving scripts to guest vm don't forget to run `chmod +x start_server.sh` on the first time
+- If it is the first time setting up vagrant add the guest files as a service on startup using systemd and systemctl
 
 ## Tools
 
