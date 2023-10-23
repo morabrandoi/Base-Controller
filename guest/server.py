@@ -57,8 +57,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 try:
                     # Decode the data to string and parse JSON
                     parsed_data = json.loads(data.decode("utf-8"))
+
                     action = parsed_data.get("action")
                     args = parsed_data.get("args")
+
+                    print(f"{action} args={args}", end="\n\n")
 
                     if action == Actions.TILT_STICK:
                         nx.tilt_stick(
@@ -79,7 +82,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                             block=args.get("block"),
                         )
                 except json.JSONDecodeError:
+                    print("\n\n\n")
                     print("Received invalid JSON:", data.decode("utf-8"))
-                print("Received:", data.decode("utf-8"))
+                    print("\n\n\n")
 
             print("Connection terminated. Waiting for a new connection...")

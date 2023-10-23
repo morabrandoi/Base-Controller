@@ -4,7 +4,7 @@ from enums import Stick, Action, Button
 class AudioConstants:
     CHANNELS = 1
     RATE = 48000
-    SAMPLE_PERIOD = 0.25
+    SAMPLE_PERIOD = 0.5
 
     DEVICE_NAME = "MIGHTY PLUG USB"
     FREQUENCY_MIN = 0  # lowest note on a bass guitar is E1 which is 41.2 Hz
@@ -13,6 +13,8 @@ class AudioConstants:
 
     # derived constants
     CHUNK = round(SAMPLE_PERIOD * RATE)
+
+    PITCH_CORRECTION_FACTOR = 1.075  # mysterious whit it works
 
     # uses nonlinear-bucketting (based on 12th root of 2)
     FREQ_TO_NOTE = [
