@@ -1,6 +1,6 @@
 import pyaudio
 import librosa
-from numpy import np
+import numpy as np
 import time
 from constants import AudioConstants
 from typing import Callable
@@ -75,3 +75,10 @@ def detect_pitch(y) -> float:
     index = magnitudes[:, 0].argmax()
     pitch = pitches[index, 0]
     return pitch
+
+
+def frequency_to_note(frequency: float) -> str:
+    for (start, end), button in AudioConstants.FREQ_TO_NOTE:
+        if start <= frequency <= end:
+            return button
+    return None
